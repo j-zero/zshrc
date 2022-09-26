@@ -1,6 +1,15 @@
 # ~/.zshrc file for zsh interactive shells.
 # see /usr/share/doc/zsh/examples/zshrc for examples
 
+
+#prompt_user=㉿
+prompt_user="$(whoami)"
+
+[ "$(whoami)" == "ringej" ] && prompt_user=Ɽ
+
+# Skull emoji for root terminal
+[ "$EUID" -eq 0 ] && prompt_user=💀
+
 setopt autocd              # change directory just by typing its name
 #setopt correct            # auto correct mistakes
 setopt interactivecomments # allow comments in interactive mode
@@ -92,21 +101,17 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 configure_prompt() {
-    #prompt_symbol=㉿
-    prompt_symbol=Ɽ
-    # Skull emoji for root terminal
-    [ "$EUID" -eq 0 ] && prompt_symbol=💀
     case "$PROMPT_ALTERNATIVE" in
         twoline)
-            #PROMPT=$'%F{%(#.blue.green)}┌──${debian_chroot:+($debian_chroot)─}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))─}(%B%F{%(#.red.blue)}'$prompt_symbol$'%b%F{%(#.blue.green)})-[%B%F{reset}%(6~.%-1~/…/%4~.%5~)%b%F{%(#.blue.green)}]\n└─%B%(#.%F{red}#.%F{blue}$)%b%F{reset} '
-            PROMPT=$'%F{%(#.blue.green)}┌─${debian_chroot:+($debian_chroot)─}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))─}%B%F{%(#.red.blue)}'$prompt_symbol$'%b%F{%(#.blue.green)} [%B%F{reset}%(6~.%-1~/…/%4~.%5~)%b%F{%(#.blue.green)}]\n└─%B%(#.%F{red}#.%F{blue}$)%b%F{reset} '
+            #PROMPT=$'%F{%(#.blue.green)}┌──${debian_chroot:+($debian_chroot)─}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))─}(%B%F{%(#.red.blue)}'$prompt_user$'%b%F{%(#.blue.green)})-[%B%F{reset}%(6~.%-1~/…/%4~.%5~)%b%F{%(#.blue.green)}]\n└─%B%(#.%F{red}#.%F{blue}$)%b%F{reset} '
+            PROMPT=$'%F{%(#.red.green)}┌─${debian_chroot:+($debian_chroot)─}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))─}%B%F{%(#.red.blue)}'$prompt_user$'%b%F{%(#.red.green)} [%B%F{reset}%(6~.%-1~/…/%4~.%5~)%b%F{%(#.red.green)}]\n└─%B%(#.%F{red}#.%F{blue}$)%b%F{reset} '
             # Right-side prompt with exit codes and background processes
             RPROMPT=$'%(?.%F{green}✓%F{reset}. %? %F{red}%B⨯%b%F{reset})%(1j. %j %F{yellow}%B⚙%b%F{reset}.) %F{green}[%F{reset}%D{%L:%M:%S}%F{green}]%F{reset}'
 
             ;;
         oneline)
             #PROMPT=$'${debian_chroot:+($debian_chroot)}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))}%B%F{%(#.red.blue)}%n@%m%b%F{reset}:%B%F{%(#.blue.green)}%~%b%F{reset}%(#.#.$) '
-            PROMPT=$'${debian_chroot:+($debian_chroot)}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))}%B%F{%(#.red.blue)}'$prompt_symbol':%B%F{%(#.blue.green)}%~%b%F{reset}%(#.#.$) '
+            PROMPT=$'${debian_chroot:+($debian_chroot)}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))}%B%F{%(#.red.blue)}'$prompt_user':%B%F{%(#.blue.green)}%~%b%F{reset}%(#.#.$) '
             RPROMPT=$'%(?.%F{green}✓%F{reset}. %? %F{red}%B⨯%b%F{reset})%(1j. %j %F{yellow}%B⚙%b%F{reset}.)'
             ;;
         backtrack)
@@ -202,7 +207,7 @@ bindkey ^P toggle_oneline_prompt
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
 xterm*|rxvt*|Eterm|aterm|kterm|gnome*|alacritty)
-    TERM_TITLE=$'\e]0;${debian_chroot:+($debian_chroot)}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))}%n@%m: %~\a'
+    TERM_TITLE=$'\e]0;${debian_chroot:+($debian_chroot)}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))}$prompt_user: %~\a'
     ;;
 *)
     ;;
